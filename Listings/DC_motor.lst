@@ -1,0 +1,145 @@
+C51 COMPILER V9.56.0.0   DC_MOTOR                                                          04/05/2023 12:07:01 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE DC_MOTOR
+OBJECT MODULE PLACED IN .\Objects\DC_motor.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE DC_motor.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -DC_motor.lst) TABS(2) OBJECT(.\Objects\DC_motor.obj)
+
+line level    source
+
+   1          //////////////////////*****************D.C Motor Control********************//////////////////////////////
+             -/
+   2          //////////////////////***************Author: Siddhanta Borah***************///////////////////////////////
+   3          
+   4          #include <reg51.h>
+   5          
+   6          //////////////////////////////// Defines Pins for Motor1  
+   7           
+   8          sbit IN1 =P2^1;             
+   9          sbit IN2 =P2^2; 
+  10          //////////////////////////////// Defines Pins for Motor2  
+  11          sbit IN3 =P2^4;             
+  12          sbit IN4 =P2^5;  
+  13          
+  14          unsigned char cmd;
+  15          
+  16          /////////////////////////////////////function for giving a delay of  millisecond
+  17          
+  18          void delay(int a)
+  19          {
+  20   1       unsigned int i,j; 
+  21   1       for(i=0;i<a;i++)
+  22   1       for(j=0;j<1275;j++);
+  23   1      }
+  24          ////////////////////////////////////// Function to initialize serial communication
+  25          void initialize_serial()  
+  26            { 
+  27   1        TMOD=0x20;  //use Timer 1, 8 bit ,auto reload
+  28   1        TH1=0xFD;   //9600 baudrate
+  29   1        SCON=0x50;
+  30   1        TR1=1;     //start timer
+  31   1        //RI=0;
+  32   1        }
+  33          ////////////////////////////////////// Function to Receive data serially
+  34          void receive()
+  35            {
+  36   1         while(RI==0);
+  37   1         cmd=SBUF;
+  38   1         RI=0;
+  39   1        }
+  40          ///////////////////////////////////////Function to move Left
+  41          void move_left()
+  42             {  
+  43   1          IN1=0; IN2=1;
+  44   1          IN3=1; IN4=0;
+  45   1         }
+  46          ///////////////////////////////////////Function to move Right
+  47          
+  48          void move_right()
+  49             {  
+  50   1          IN1=1; IN2=0;
+  51   1          IN3=0; IN4=1;
+  52   1         }
+  53          ///////////////////////////////////////Function to move forward
+C51 COMPILER V9.56.0.0   DC_MOTOR                                                          04/05/2023 12:07:01 PAGE 2   
+
+  54          
+  55          void move_forward()
+  56             { 
+  57   1          IN1=1; IN2=0;
+  58   1          IN3=1; IN4=0; 
+  59   1         }
+  60          
+  61          ///////////////////////////////////////Function to move backward
+  62          
+  63          void move_backward()
+  64             { 
+  65   1          IN1=0; IN2=1;
+  66   1          IN3=0; IN4=1;    
+  67   1         }
+  68          ///////////////////////////////////////Function to stop
+  69          
+  70          void stop()
+  71             {  
+  72   1          IN1=0; IN2=0;
+  73   1          IN3=0; IN4=0;   
+  74   1         }     
+  75           
+  76          ////////////////////////////////********** Main program**************************/////////////////////////
+             -/
+  77          void main()
+  78          {   
+  79   1        IN1=0; IN2=0;  
+  80   1        IN3=0; IN4=0; 
+  81   1        initialize_serial(); 
+  82   1        while(1)
+  83   1        {  
+  84   2         receive();
+  85   2         if(cmd=='F')
+  86   2         {
+  87   3           move_forward();
+  88   3           delay(10);
+  89   3           //stop();
+  90   3         }
+  91   2         else if(cmd=='B')
+  92   2         {
+  93   3           move_backward();
+  94   3           delay(10);
+  95   3           //stop();
+  96   3         }
+  97   2         else if(cmd=='L')
+  98   2         {
+  99   3           move_left();
+ 100   3           delay(10);
+ 101   3           //stop();
+ 102   3         }
+ 103   2         else if(cmd=='R')
+ 104   2         {
+ 105   3           move_right();
+ 106   3           delay(10);
+ 107   3           //stop();
+ 108   3         }
+ 109   2         else if(cmd=='S')
+ 110   2         {
+ 111   3           stop();
+ 112   3           delay(10);
+ 113   3         }  
+ 114   2        }
+C51 COMPILER V9.56.0.0   DC_MOTOR                                                          04/05/2023 12:07:01 PAGE 3   
+
+ 115   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    176    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
